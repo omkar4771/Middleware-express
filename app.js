@@ -13,17 +13,47 @@ const app = express();
 // });
 
 //loger - mprgan
-app.use((req,res,next)=>{
-    req.time = (Date.now());
-    console.log(req.method, req.hostname, req.path, req.time);
-    next();
-})
+// app.use((req,res,next)=>{
+//     req.time = (Date.now());
+//     console.log(req.method, req.hostname, req.path, req.time);
+//     next();
+// });
+
+
+// app.use("/api", (req,res,next)=>{
+//     let {token} = req.query;
+//     if(token == "giveaccess"){
+//         next();
+//     }
+//     res.send("Access Denide...!");
+// });
+// app.get("/api", (req,res)=>{
+//     res.send("data");
+// });
+
+const CheckToken = (req,res,next)=>{
+    let {token} = req.query;
+    if(token == "giveaccess"){
+        next();
+    }
+    res.send("Access Denide...!");
+};
+app.get("/api", CheckToken, (req,res)=>{
+    res.send("data");
+
+});
+
 app.get("/",(req,res)=>{
     res.send("Hii I am a root");
 });
 
 app.get("/random",(req,res)=>{
     res.send("This is a ramdom page");
+});
+
+//404 error -->error handling mioddleware
+app.use((req,res,)=>{
+    res.status(404).send("Page Not Found...!");
 });
 
 app.listen(8080,()=>{
