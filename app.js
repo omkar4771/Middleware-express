@@ -1,5 +1,6 @@
 const express =require("express");
 const app = express();
+const ExpressError = require("./ExpressError");
 
 //mioddleware -> response send
 // app.use( (req,res, next)=>{
@@ -36,11 +37,11 @@ const CheckToken = (req,res,next)=>{
     if(token == "giveaccess"){
         next();
     }
-    res.send("Access Denide...!");
+    throw new ExpressError(401, "Access Denide...!");
 };
+
 app.get("/api", CheckToken, (req,res)=>{
     res.send("data");
-
 });
 
 app.get("/",(req,res)=>{
@@ -50,6 +51,24 @@ app.get("/",(req,res)=>{
 app.get("/random",(req,res)=>{
     res.send("This is a ramdom page");
 });
+
+app.get("/err",(req,res)=>{
+    abc=abcd;
+});
+
+app.get("/admin", (req,res)=>{
+    throw new ExpressError(403,"Access to admin is Forbidden");
+});
+
+app.use((err,req,res,next)=>{
+    let{ status = 500,message = "Some Error"} = err;
+    res.status(status).send(message);
+});
+
+// app.use((err,req,res,next)=>{
+//     console.log("-----ERROR2 MIDDLEWARE-------");
+//     next(err);
+// });
 
 //404 error -->error handling mioddleware
 app.use((req,res,)=>{
